@@ -1,31 +1,36 @@
-from django.db import models
 import os
 
+from django.contrib.auth.models import AbstractUser
+from django.db import models
 from django.db.models import F
-from django.db.models.functions import Radians, Sin, Cos, ACos
+from django.db.models.functions import ACos, Cos, Radians, Sin
 
 from script import watermark_with_photo
 
 
-class User(models.Model):
+class User(AbstractUser):
     GENDER_CHOICES = [
-        ('F', 'female'),
-        ('M', 'male'),
+        ("F", "female"),
+        ("M", "male"),
     ]
-    img = models.ImageField(blank=True, upload_to='users_img')
+
+    img = models.ImageField(blank=True, upload_to="users_img")
     gender = models.CharField(max_length=20, choices=GENDER_CHOICES)
     first_name = models.CharField(max_length=20)
     last_name = models.CharField(max_length=20)
     email = models.EmailField(blank=True)
     date_created = models.DateTimeField(auto_created=True)
 
-    likes = models.ManyToManyField('self', blank=True)
-    # likes = models.ManyToManyRel('self')
+    likes = models.ManyToManyField("self", blank=True)
 
     def save(self, *args, **kwargs):
-        watermark_with_photo(self.img, f"media/users_img/{self.img}_watermarked.jpg",
-                             'watermark.jpg', position=(0, 0))
-        self.img = f'{self.img}_watermarked.jpg'
+        watermark_with_photo(
+            self.img,
+            f"media/users_img/{self.img}_watermarked.jpg",
+            "watermark.jpg",
+            position=(0, 0),
+        )
+        self.img = f"{self.img}_watermarked.jpg"
         # r = Path(s) file.php.jpg
         # r.basename
         return super().save(*args, **kwargs)
@@ -36,11 +41,12 @@ class User(models.Model):
     def range_filter(self, range_in_meters):
         # select count(*) as t
         distance = {
-            'distance': 6367 * ACos(
-                Cos(Radians(self.latitude)) *
-                Cos(Radians(F('latitude'))) *
-                Cos(Radians(F('longitude')) - Radians(self.longitude)) +
-                Sin(Radians(self.latitude)) * Sin(Radians(F('latitude')))
+            "distance": 6367
+            * ACos(
+                Cos(Radians(self.latitude))
+                * Cos(Radians(F("latitude")))
+                * Cos(Radians(F("longitude")) - Radians(self.longitude))
+                + Sin(Radians(self.latitude)) * Sin(Radians(F("latitude")))
             ),
         }
         qs = User.objects.annotate(**distance)

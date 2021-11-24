@@ -1,10 +1,9 @@
 from PIL import Image
 
 
-def watermark_with_photo(input_image_path,
-                    output_image_path,
-                    watermark_image_path,
-                    position):
+def watermark_with_photo(
+    input_image_path, output_image_path, watermark_image_path, position
+):
     base_image = Image.open(input_image_path)
     watermark = Image.open(watermark_image_path)
 
@@ -17,4 +16,3 @@ def watermark_with_photo(input_image_path,
 #     img = 'kitty.jpg'
 #     watermark_with_photo(img, 'lighthouse_watermarked2.jpg',
 #                          'watermark.jpg', position=(0, 0))
-
