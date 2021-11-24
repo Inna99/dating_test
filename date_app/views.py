@@ -1,35 +1,41 @@
 # from django.shortcuts import render
-from rest_framework.generics import (CreateAPIView, DestroyAPIView,
-                                     ListAPIView, UpdateAPIView)
+from django.http import HttpRequest
+from rest_framework import status
+from rest_framework.decorators import action
+from rest_framework.response import Response
+from rest_framework.viewsets import ModelViewSet
 
 from date_app.models import User
 from date_app.serializers import UserSerializer
 
+from django_filters import rest_framework as filters
 
-# Create your views here.
-class ListTodoAPIView(ListAPIView):
-    """This endpoint list all of the available todos from the database"""
 
+class UserFilter(filters.FilterSet):
+    name_in = filters.CharFilter(field_name='email')
+
+    class Meta:
+        model = User
+        fields = ('gender', 'first_name', 'last_name')
+
+
+class UserViewSet(ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
+    filterset_class = UserFilter
 
 
-class CreateTodoAPIView(CreateAPIView):
-    """This endpoint allows for creation of a todo"""
+    # search_fields = ["id", "last_name"]
+    # filterset_fields = ('gender', 'first_name', 'last_name')
 
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
-
-
-class UpdateTodoAPIView(UpdateAPIView):
-    """This endpoint allows for updating a specific todo by passing in the id of the todo to update"""
-
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
-
-
-class DeleteTodoAPIView(DestroyAPIView):
-    """This endpoint allows for deletion of a specific Todo from the database"""
-
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
+    @action(detail=True, methods=['GET'], name='Get Highlight')
+    def match(self, request, *args, **kwargs):
+        #
+        # print(args, kwargs[pk])
+        request : HttpRequest
+        # request.headers token -> from_user_id url -> to_user_id=kwargs[pk]
+        # user:User
+        # user.user_likes_set
+        queryset = User.objects.filter(id__gt=12).all()
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)

@@ -4,6 +4,8 @@ from date_app.models import User
 
 
 class UserSerializer(serializers.ModelSerializer):
+    # img =
+
     class Meta:
         model = User
         # fields = ["gender", "last_name", "first_name"]
