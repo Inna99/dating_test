@@ -19,18 +19,19 @@ class User(AbstractUser):
     first_name = models.CharField(max_length=20)
     last_name = models.CharField(max_length=20)
     email = models.EmailField(blank=True)
-    date_created = models.DateTimeField(auto_created=True)
+    date_created = models.DateTimeField(auto_now_add=True)
 
     likes = models.ManyToManyField("self", blank=True)
 
     def save(self, *args, **kwargs):
-        watermark_with_photo(
-            self.img,
-            f"media/users_img/{self.img}_watermarked.jpg",
-            "watermark.jpg",
-            position=(0, 0),
-        )
-        self.img = f"{self.img}_watermarked.jpg"
+        if self.img:
+            watermark_with_photo(
+                self.img,
+                f"media/users_img/{self.img}_watermarked.jpg",
+                "watermark.jpg",
+                position=(0, 0),
+            )
+            self.img = f"{self.img}_watermarked.jpg"
         # r = Path(s) file.php.jpg
         # r.basename
         return super().save(*args, **kwargs)

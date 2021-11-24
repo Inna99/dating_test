@@ -1,11 +1,12 @@
 from django.urls import include, path
+from rest_framework.permissions import AllowAny
 from rest_framework.routers import DefaultRouter, DynamicRoute, Route
 
 # from . import views
 from date_app.views import UserViewSet
 
 urlpatterns = [
-    path("client/create", UserViewSet.as_view({"post": "create"})),
+    path("client/create", UserViewSet.as_view({"post": "create"}, permission_classes=[AllowAny])),
     path("list", UserViewSet.as_view({"get": "list"})),
     path("client/<int:id>/match", UserViewSet.as_view({"get": "match"})),
     # path('api/list', UserViewSet.as_view({'get':'list'}))
