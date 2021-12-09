@@ -9,9 +9,6 @@ urlpatterns = [
     path("client/create", UserViewSet.as_view({"post": "create"}, permission_classes=[AllowAny])),
     path("list", UserViewSet.as_view({"get": "list"})),
     path("client/<int:id>/match", UserViewSet.as_view({"get": "match"})),
-    # path('api/list', UserViewSet.as_view({'get':'list'}))
-    # path("", views.ListTextAPIView.as_view(), name="text_list"),
-    # path("create/", views.CreateTextAPIView.as_view(), name="text_create"),
 ]
 # class CustomRouter(DefaultRouter):
 #     """

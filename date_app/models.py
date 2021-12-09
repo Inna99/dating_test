@@ -1,5 +1,3 @@
-import os
-
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.db.models import F
@@ -13,11 +11,10 @@ class User(AbstractUser):
         ("F", "female"),
         ("M", "male"),
     ]
-
     img = models.ImageField(blank=True, upload_to="users_img")
-    gender = models.CharField(max_length=20, choices=GENDER_CHOICES)
-    first_name = models.CharField(max_length=20)
-    last_name = models.CharField(max_length=20)
+    gender = models.CharField(max_length=21, choices=GENDER_CHOICES)
+    first_name = models.CharField(max_length=21)
+    last_name = models.CharField(max_length=21)
     email = models.EmailField(blank=True)
     date_created = models.DateTimeField(auto_now_add=True)
 

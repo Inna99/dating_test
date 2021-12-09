@@ -4,27 +4,36 @@ services:
     image: postgres
     ports:
       - 6432:5432
+#      - local_port:docker_port
     environment:
             POSTGRES_PASSWORD: postgres
             POSTGRES_DB: postgres
     volumes:
       - ./pg/:/var/lib/postgres/data
-#  web:
-#    build: .
-#    command: python manage.py runserver 0.0.0.0:8000
-#    volumes:
-#      - .:/code
-#    ports:
-#      - "8000:8000"
+#      -local_folder:docker_folder
+  web:
+    build: .
+    command: bash -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+    volumes:
+      - .:/code
+    environment:
+      BACKEND_DB_NAME: postgres
+      BACKEND_DB_HOST: db
+      BACKEND_DB_USER: postgres
+      BACKEND_DB_PASSWORD: postgres
+      BACKEND_DB_ENGINE: postgresql_psycopg2
+      BACKEND_DB_PORT: 5432
+    ports:
+      - "8000:8000"
 #    restart: always
-#    depends_on:
-#      - db
+    depends_on:
+      - db
 
-  adminer:
-     image: adminer
-     #restart: always
-     depends_on:
-       - db
-     ports:
-       - 7080:8080
+#  adminer:
+#     image: adminer
+#     #restart: always
+#     depends_on:
+#       - db
+#     ports:
+#       - 7080:8080
 
